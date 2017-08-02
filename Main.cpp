@@ -28,6 +28,11 @@ BYTE MoneyValue[] = {0xA0, 0x1C, 0x2B, 0x0};
 DWORD MoneyAddress = {0x0218DFB4};
 DWORD MoneyOffsets[] = {0x28, 0x28};
 
+//Exp Hackz
+bool ExpStat;
+BYTE ExpValue[] = {0xA0, 0xD9, 0x8, 0x0};
+DWORD ExpAddress = {0x0218DFB4};
+DWORD ExpOffsets[] = {0x1674};
 
 
 
@@ -41,6 +46,7 @@ int main()
 	HANDLE hProcHandle = NULL;
 	UpdateNext = true;
 	std::string sMoneyStat = "OFF";
+	std::string sExpStat = "OFF";
 
 
 	while (!GetAsyncKeyState(VK_INSERT))
@@ -80,15 +86,17 @@ int main()
 			{
 				system("cls");
 				setColor(14); std::cout << "-----------------------------------------------------" << std::endl;
-				std::cout << "|              EURO TRUCK SIMULATOR 2               |" << std::endl;
+				std::cout << "|          EURO TRUCK SIMULATOR 2 Trainer           |" << std::endl;
 				std::cout << "-----------------------------------------------------" << std::endl << std::endl; setColor(7);
 				std::cout << " GAME STATUS:  " << GameStatus << std::endl;
 				setColor(12);  std::cout << " WARNING: Make sure you are running the 32 bit version of the game" << std::endl << std::endl << std::endl << std::endl;
-				setColor(7); std::cout << " F1 - Unlimited Money -->"; setColor(11); cout << sMoneyStat; setColor(7); cout << "<--" << std::endl << std::endl;
+				setColor(7); std::cout << " F1 - Unlimited Money       -->"; setColor(11); cout << sMoneyStat; setColor(7); cout << "<--" << std::endl << std::endl;
+				setColor(7); std::cout << " F2 - Level 100             -->"; setColor(11); cout << sExpStat; setColor(7); cout << "<--" << std::endl << std::endl;
 				std::cout << "\n" << std::endl;
 				std::cout << " Press INSERT to close" << std::endl;
 				std::cout << "-----------------------------------------------------" << std::endl;
 				setColor(13); std::cout << " Made by: Capitan Retraso" << std::endl; setColor(7);
+				setColor(7); std::cout << " "; setColor(249); cout << "v 0.2" << std::endl; setColor(7);
 				UpdateNext = false;
 				TimeSinceLastUpdate = clock();
 			}
@@ -111,6 +119,14 @@ int main()
 					UpdateNext = true;
 					if (MoneyStat)sMoneyStat = "ON";
 					else sMoneyStat = "OFF";
+				}
+				if (GetAsyncKeyState(VK_F2))
+				{
+					OnePressTimer = clock();
+					ExpStat = !ExpStat;
+					UpdateNext = true;
+					if (ExpStat)sExpStat = "ON";
+					else sExpStat = "OFF";
 				}
 			}
 		}
@@ -148,5 +164,10 @@ void WriteToMemory(HANDLE hProcHandle)
 	{ 
 		DWORD AddressToWrite = FindDmaAddy(2, hProcHandle, MoneyOffsets, MoneyAddress);  //First is number of pointers
 		WriteProcessMemory(hProcHandle, (BYTE*)AddressToWrite, &MoneyValue, sizeof(MoneyValue), NULL);
+	}
+	if (ExpStat)
+	{
+		DWORD AddressToWrite = FindDmaAddy(1, hProcHandle, ExpOffsets, ExpAddress);  //First is number of pointers
+		WriteProcessMemory(hProcHandle, (BYTE*)AddressToWrite, &ExpValue, sizeof(ExpValue), NULL);
 	}
 }
